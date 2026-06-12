@@ -18,9 +18,22 @@
 <body class="text-slate-800 antialiased p-4 md:p-8">
 
     <div class="max-w-6xl mx-auto">
-        <header class="mb-8">
-            <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Wealth Growth Calculator</h1>
-            <p class="text-slate-500 mt-2">Model your investment growth, including when you plan to stop contributing and let it ride.</p>
+        <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Wealth Growth Calculator</h1>
+                <p class="text-slate-500 mt-2">Model your investment growth, including when you plan to stop contributing and let it ride.</p>
+            </div>
+            <!-- Currency Selector -->
+            <div class="bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200 flex items-center gap-3 w-fit">
+                <label class="text-sm font-semibold text-slate-700">Currency:</label>
+                <select id="currency" class="bg-transparent border-none text-slate-900 font-medium focus:ring-0 cursor-pointer outline-none" onchange="updateCurrency()">
+                    <option value="AED" selected>AED (د.إ)</option>
+                    <option value="INR">INR (₹)</option>
+                    <option value="USD">USD ($)</option>
+                    <option value="EUR">EUR (€)</option>
+                    <option value="GBP">GBP (£)</option>
+                </select>
+            </div>
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -38,9 +51,9 @@
                         <label class="block text-sm font-medium text-slate-700 mb-1">Initial Investment</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <span class="text-slate-400 sm:text-sm">AED</span>
+                                <span class="currency-label text-slate-400 sm:text-sm font-semibold">AED</span>
                             </div>
-                            <input type="number" id="initial" value="10000" class="block w-full pl-12 pr-3 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" oninput="calculate()">
+                            <input type="number" id="initial" value="4500" class="block w-full pl-12 pr-3 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors font-medium" oninput="calculate()">
                         </div>
                     </div>
 
@@ -50,11 +63,11 @@
                         <div class="flex gap-2">
                             <div class="relative flex-grow">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <span class="text-slate-400 sm:text-sm">AED</span>
+                                    <span class="currency-label text-slate-400 sm:text-sm font-semibold">AED</span>
                                 </div>
-                                <input type="number" id="contribution" value="2000" class="block w-full pl-12 pr-3 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" oninput="calculate()">
+                                <input type="number" id="contribution" value="1500" class="block w-full pl-12 pr-3 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors font-medium" oninput="calculate()">
                             </div>
-                            <select id="freq" class="block w-32 pl-3 pr-8 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors bg-white" onchange="calculate()">
+                            <select id="freq" class="block w-32 pl-3 pr-8 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors bg-white font-medium" onchange="calculate()">
                                 <option value="monthly">Monthly</option>
                                 <option value="annual">Annually</option>
                             </select>
@@ -65,11 +78,11 @@
                     <div class="grid grid-cols-2 gap-4 pt-2">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Total Years</label>
-                            <input type="number" id="totalYears" value="20" class="block w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" oninput="calculate()">
+                            <input type="number" id="totalYears" value="15" class="block w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors font-medium" oninput="calculate()">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Stop Investing In</label>
-                            <input type="number" id="stopYears" value="10" class="block w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" oninput="calculate()">
+                            <input type="number" id="stopYears" value="10" class="block w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors font-medium" oninput="calculate()">
                             <p class="text-xs text-slate-400 mt-1">Year contributions end</p>
                         </div>
                     </div>
@@ -78,9 +91,9 @@
                     <div class="pt-2">
                         <label class="block text-sm font-medium text-slate-700 mb-1">Expected Annual Return</label>
                         <div class="relative">
-                            <input type="number" id="rate" value="7" step="0.1" class="block w-full pl-3 pr-8 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" oninput="calculate()">
+                            <input type="number" id="rate" value="12" step="0.1" class="block w-full pl-3 pr-8 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors font-medium text-indigo-700" oninput="calculate()">
                             <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                <span class="text-slate-400 sm:text-sm">%</span>
+                                <span class="text-slate-400 sm:text-sm font-semibold">%</span>
                             </div>
                         </div>
                     </div>
@@ -94,22 +107,22 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="bg-indigo-600 text-white p-6 rounded-2xl shadow-sm">
                         <p class="text-indigo-100 text-sm font-medium mb-1">Total Future Value</p>
-                        <h3 class="text-3xl font-bold" id="outTotal">AED 0</h3>
+                        <h3 class="text-3xl font-bold tracking-tight" id="outTotal">0</h3>
                     </div>
                     <div class="bg-white border border-slate-100 p-6 rounded-2xl shadow-sm">
                         <p class="text-slate-500 text-sm font-medium mb-1">Total Contributions</p>
-                        <h3 class="text-2xl font-bold text-slate-800" id="outPrincipal">AED 0</h3>
+                        <h3 class="text-2xl font-bold text-slate-800 tracking-tight" id="outPrincipal">0</h3>
                     </div>
                     <div class="bg-white border border-slate-100 p-6 rounded-2xl shadow-sm">
                         <p class="text-slate-500 text-sm font-medium mb-1">Total Returns Earned</p>
-                        <h3 class="text-2xl font-bold text-emerald-600" id="outInterest">AED 0</h3>
+                        <h3 class="text-2xl font-bold text-emerald-500 tracking-tight" id="outInterest">0</h3>
                     </div>
                 </div>
 
                 <!-- Chart -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex-grow">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex-grow min-h-[400px] flex flex-col">
                     <h2 class="text-lg font-semibold mb-4 text-slate-800">Growth Trajectory</h2>
-                    <div class="relative h-72 md:h-96 w-full">
+                    <div class="relative flex-grow w-full h-full">
                         <canvas id="growthChart"></canvas>
                     </div>
                 </div>
@@ -120,11 +133,142 @@
 
     <script>
         let growthChart = null;
+        const currencySymbols = { 'AED': 'AED', 'INR': '₹', 'USD': '$', 'EUR': '€', 'GBP': '£' };
+        let currentCurrency = 'AED';
 
-        // Formats numbers with commas (e.g., 1,000,000)
+        function updateCurrency() {
+            currentCurrency = document.getElementById('currency').value;
+            const sym = currencySymbols[currentCurrency];
+            
+            // Update all small input labels
+            document.querySelectorAll('.currency-label').forEach(el => {
+                el.innerText = sym;
+            });
+            
+            // Recalculate to update chart and summaries with new symbol
+            calculate();
+        }
+
         const formatCurrency = (num) => {
-            return 'AED ' + num.toLocaleString('en-US', { maximumFractionDigits: 0 });
+            const sym = currencySymbols[currentCurrency];
+            // Format smartly: spacing for text acronyms, attached for symbols (e.g., "AED 5,000" vs "$5,000")
+            const separator = (sym.length > 1) ? ' ' : ''; 
+            return sym + separator + num.toLocaleString('en-US', { maximumFractionDigits: 0 });
         };
+
+        // Massive collection of Hinglish Roasts
+        const roasts = {
+            rate: [
+                "20% se zyada return?! Warren Buffett ko tuition tu hi deta hai kya? Chup chap index fund mein daal!",
+                "Harshad Mehta asli id se aao.",
+                "Bhai 20% guaranteed return bas ponzi scheme mein milta hai. Anuradha pe bharosa mat kar (25 din mein paisa double).",
+                "Jhunjhunwala ki aatma aa gayi kya tere andar?",
+                "Crypto mein Dogecoin kharid raha hai kya chup chap?",
+                "FD ka rate dekh le pehle, phir 20% ke khwab dekh.",
+                "Nirmala Sitharaman tax laga degi 30%, sapne mat dekh.",
+                "Bhai itna return toh drug cartel wale bhi nahi nikal paate.",
+                "Agar itna aasan hota 20% lana, toh sab Mukesh Ambani hote.",
+                "Vijay Mallya se tips le raha hai kya London phone lagake?",
+                "Shark Tank mein jaake pitch kar ye idea, Ashneer Grover nikal dega 'Yeh sab doglapan hai' bolke.",
+                "Satta bazaar nahi hai ye, compounding calculator hai mere bhai.",
+                "Bhai tere returns dekh ke toh Laxmi Chit Fund wale bhi sharma jaye.",
+                "Kya scheme hai tere paas? Mujhe bhi bata de thoda, main bhi nikal lu.",
+                "Dream11 pe team bana le, yahan time waste mat kar apna.",
+                "Phishing link pe click karke aaya hai na tu Telegram se?",
+                "Hawa mein teer mat chala, reality check le thoda.",
+                "Chacha vidhayak hai kya jo andar ki khabar hai tere paas market ki?",
+                "Return on Investment nahi, Return of Imagination chal raha hai tera.",
+                "Bhai itne return par to RBI khud aake tera account block karegi.",
+                "Scam 1992 ka background music band kar aur aukaat mein wapas aaja."
+            ],
+            contribution: [
+                "Mahine ka 3000+ invest karega?! Bhai Ambani ka pota hai ya khana pina chhod diya hai?",
+                "Kidney bech di kya SIP bharne ke liye?",
+                "Bhai tera CTC kitna hai jo itna invest kar raha hai? IT raid padegi jaldi.",
+                "Ghar walon ko bhooka maarne ka plan hai kya tu SIP ke chakkar mein?",
+                "Bhai EMIs nahi bharne kya? Sara paisa yahi dalega toh bank wale ghar utha lenge.",
+                "Dost ko udhaar dene ke time toh tu gareeb ban jata hai, yahan itna paisa?",
+                "Zomato Swiggy delete kar diya kya bilkul?",
+                "Bhai itna bacha raha hai toh doston ko Goa ka plan hi sponsor karde.",
+                "Ameer baap ki bigdi aulad lagta hai tu.",
+                "Dubai mein tel ka kuan mil gaya kya tereko digging karte hue?",
+                "Bank loot ke aaya hai kya abhi abhi GTA San Andreas mein?",
+                "Salaried employee lag nahi raha tu, pakka black money white kar raha hai.",
+                "Bhai itne ka toh logon ka flat ka rent hota hai Bangalore mein.",
+                "Tax bachane ke chakkar mein zindagi jeena bhool gaya hai tu.",
+                "Kanjoosi ki bhi hadd hoti hai, thoda toh khud pe aur doston pe kharch kar.",
+                "Bhai tu saans bhi leta hai ya usme bhi oxygen save karke invest karta hai?",
+                "Hacker waali harkatein lag rahi hain teri, sach sach bata.",
+                "Ghar ka ration band karke SIP kon chalu karta hai bhai?",
+                "Bhai tu surely under-the-table kama raha hai, pakka ghapla hai.",
+                "Itna paisa har mahine? Pakka lottery lagi hai teri.",
+                "Ambani ji, aap yahan humare chote se calculator pe kaise?"
+            ],
+            initial: [
+                "5000+ shuruwat mein hi cash?! Itna paisa kahan se laya? ED walo ko call lagau kya?",
+                "Baap ka paisa udao, mast jiyo, Excel sheet mein kyu time waste kar raha hai.",
+                "Bhai kaunsa ATM fodd ke aaya hai raat ko?",
+                "Dowry ka paisa hai kya jo chup chap invest kar raha hai?",
+                "Bhai mujhe bhi apna driver rakh le, itna paisa hai tere paas toh.",
+                "Pocket money mili hai itni ya local train mein padosi ka purse maara hai?",
+                "Itna lumpsum? Naya naya aashik lagta hai jo show off kar raha hai.",
+                "Gade hue murde aur gada hua khazana dono ek saath mil gaye kya?",
+                "Bhai tera toh startup seedha Series A funding pe chal raha hai.",
+                "KBC mein jeet ke aaya hai kya kal raat Amitabh Bachchan se mil ke?",
+                "Bhai income tax return bhara hai ya bas black money chupane ki jagah dhund raha hai?",
+                "Chori ka maal zyada din tikta nahi hai bhai, sambhal ke.",
+                "Paisa laya kahan se tu pehle ye bata? Form 16 dikha apna.",
+                "Tu pakka kisi corrupt MLA ka beta ya bhatija hai.",
+                "Initial investment itni hai toh final ke toh sapne hi mat dekh, error 404 aayega.",
+                "Hera Pheri ke Baburao wala scene chal raha hai kya tera?",
+                "Bhai ek 500 ka note mujhe bhi Paytm karde itni meherbani kar.",
+                "Purani pushtaini zameen bechi hai na sach sach bata.",
+                "Itna initial amount dalega toh mere calculator ka RAM aur CSS dono crash ho jayega.",
+                "Bhai tujhe compounding ki zaroorat hi nahi, tu already settled aur ameer hai.",
+                "Itne mein toh ek badiya chat-pakode ka thela khul jata aur zyada return deta!"
+            ],
+            years: [
+                "20 saal se zyada ka plan?! Bhai pehle ye bata tu tab tak zinda bachega? Kal ka bharosa nahi aur lamba game khel raha hai!",
+                "Beta, tab tak duniya khatam ho jayegi, Elon Musk Mars pe chala jayega aur tu yahi return ginta rehna.",
+                "Immortal hone ka amrit pi ke aaya hai kya Himalayas se?",
+                "Bhai itne saalo mein tera pota tere ye saare paise uda raha hoga club mein.",
+                "Punarjanam mein vishwas hai kya tujhe jo itne long term ki soch raha hai?",
+                "Buddhe ho jaoge tab tak, daant nahi bachenge ye paise khane ko.",
+                "Kachhua (Turtle) ki aayu leke paida hua hai kya?",
+                "Bhai itni dur ki toh LIC ke agent bhi nahi sochte polices bechte waqt.",
+                "20 saal baad ye website ka domain bhi expire ho jayega bhai.",
+                "Dinosaur wapas aa jayenge Jurassic Park se tab tak.",
+                "Tu vampire (Dracula) hai kya jo sadiyon tak jiyega andhere mein?",
+                "Paisa kab enjoy karega? Agle janam mein swarg mein?",
+                "Bhai abhi toh teri shaadi bhi nahi hui dhang se, pehle bacche toh kar le.",
+                "Kaliyug chal raha hai bhai, 20 saal kisne dekhe hain aajkal ki diet ke saath.",
+                "Itna long term vision toh Ratan Tata ji ka bhi nahi tha Tata Nano ke liye.",
+                "Zindagi Na Milegi Dobara dekh le jaake, thoda abhi aish kar le excel chhod ke.",
+                "Tu time capsule bana raha hai zameen mein gaadne ke liye ya investment?",
+                "Agle ice age ke survival ke liye bacha raha hai kya itna lamba?",
+                "Bhai tab tak AI aur robots humpe raj kar rahe honge, paisa paper ban jayega.",
+                "Khushi-khushi aur ghumne phirne ki umar mein excel sheets pe saal badha raha hai.",
+                "20 saal? Bhai tu surely Captain America ban ke hibernation mein jaa raha hai baraf mein."
+            ],
+            stopYears: [
+                "Bhai total saal se zyada STOP YEAR kaise ho sakta hai?! Time machine leke past mein jaake invest karega kya?",
+                "Maths fail tha kya bachpan se? Total duration se lamba contribution kaise chalega meri jaan?",
+                "Logic ki toh tune poori dhajjiya uda di. Physics, Math sab ro rahe hain corner mein.",
+                "Christopher Nolan ki nayi sci-fi movie ka script likh raha hai kya tu idhar?",
+                "Bhai pehle LKG dobara pass karke aa, uske baad investment aur compounding seekhna.",
+                "Waah re Einstein! Total 10 saal jiyega aur SIP 15 saal bharne ka plan hai?!",
+                "Error 404: Tera common sense not found. Stop year total saal ke andar hona chahiye na!",
+                "Tenet movie dekh ke aaya hai pakka, jo backward time mein SIP bharega.",
+                "Ye input dekh ke calculator ne khud khudkushi kar lene ka socha hai.",
+                "Tu definitely woh banda hai jo darwaze pe 'Pull' likha hota hai fir bhi 'Push' karke kholta hai."
+            ]
+        };
+
+        // Helper to grab random roast
+        function getRandomRoast(category) {
+            const arr = roasts[category];
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
 
         function calculate() {
             // Get values
@@ -135,17 +279,27 @@
             let stopYears = parseInt(document.getElementById('stopYears').value) || 0;
             const rate = parseFloat(document.getElementById('rate').value) || 0;
 
-            // Easter egg: Returns > 100%
-            if (rate > 100) {
-                triggerMemeMode();
+            // Enforce constraints & trigger Roasts
+            if (rate > 20) {
+                triggerMemeMode(getRandomRoast('rate'));
                 return;
             }
-
-            // Logic check: Can't stop after total years
+            if (freq === 'monthly' && contribution > 3000) {
+                triggerMemeMode(getRandomRoast('contribution'));
+                return;
+            }
+            if (initial > 5000) {
+                triggerMemeMode(getRandomRoast('initial'));
+                return;
+            }
+            if (totalYears > 20) {
+                triggerMemeMode(getRandomRoast('years'));
+                return;
+            }
+            // FIX: Stop Investing logic checked logically
             if (stopYears > totalYears) {
-                stopYears = totalYears;
-                // Don't auto-override the input field while typing to avoid annoyance, 
-                // but use totalYears for math.
+                triggerMemeMode(getRandomRoast('stopYears'));
+                return;
             }
 
             let currentBalance = initial;
@@ -210,14 +364,14 @@
                             data: principalData,
                             backgroundColor: '#94a3b8', // slate-400
                             stacked: true,
-                            borderRadius: { topLeft: 0, topRight: 0, bottomLeft: 4, bottomRight: 4 }
+                            borderRadius: { topLeft: 0, topRight: 0, bottomLeft: 6, bottomRight: 6 }
                         },
                         {
                             label: 'Returns Earned',
                             data: returnData,
                             backgroundColor: '#10b981', // emerald-500
                             stacked: true,
-                            borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 0, bottomRight: 0 }
+                            borderRadius: { topLeft: 6, topRight: 6, bottomLeft: 0, bottomRight: 0 }
                         }
                     ]
                 },
@@ -233,11 +387,11 @@
                             callbacks: {
                                 label: function(context) {
                                     let label = context.dataset.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
+                                    if (label) label += ': ';
                                     if (context.parsed.y !== null) {
-                                        label += 'AED ' + context.parsed.y.toLocaleString('en-US', {maximumFractionDigits: 0});
+                                        const sym = currencySymbols[currentCurrency];
+                                        const sep = sym.length > 1 ? ' ' : '';
+                                        label += sym + sep + context.parsed.y.toLocaleString('en-US', {maximumFractionDigits: 0});
                                     }
                                     return label;
                                 },
@@ -246,13 +400,15 @@
                                     tooltipItems.forEach(function(tooltipItem) {
                                         total += tooltipItem.parsed.y;
                                     });
-                                    return 'Total Balance: AED ' + total.toLocaleString('en-US', {maximumFractionDigits: 0});
+                                    const sym = currencySymbols[currentCurrency];
+                                    const sep = sym.length > 1 ? ' ' : '';
+                                    return 'Total Balance: ' + sym + sep + total.toLocaleString('en-US', {maximumFractionDigits: 0});
                                 }
                             }
                         },
                         legend: {
                             position: 'bottom',
-                            labels: { usePointStyle: true, padding: 20 }
+                            labels: { usePointStyle: true, padding: 20, font: { family: 'Inter', size: 13 } }
                         }
                     },
                     scales: {
@@ -266,10 +422,12 @@
                             beginAtZero: true,
                             ticks: {
                                 callback: function(value) {
-                                    if (value >= 1000000) return (value / 1000000).toFixed(1) + 'M';
-                                    if (value >= 1000) return (value / 1000).toFixed(0) + 'k';
-                                    return value;
-                                }
+                                    const sym = currencySymbols[currentCurrency];
+                                    if (value >= 1000000) return sym + (value / 1000000).toFixed(1) + 'M';
+                                    if (value >= 1000) return sym + (value / 1000).toFixed(0) + 'k';
+                                    return sym + value;
+                                },
+                                font: { family: 'Inter' }
                             },
                             grid: { color: '#f1f5f9' }
                         }
@@ -278,40 +436,42 @@
             });
         }
 
-        // Run calculation on load
-        window.onload = calculate;
+        // Run setup and initial calculation on load
+        window.onload = () => {
+            updateCurrency(); // This will auto-call calculate() too
+        };
 
-        function triggerMemeMode() {
+        function triggerMemeMode(roastMessage) {
             // Clear the body classes to remove padding and light background
-            document.body.className = "bg-slate-900 m-0 p-0 overflow-hidden";
+            document.body.className = "bg-slate-950 m-0 p-0 overflow-hidden";
             
-            // Overwrite the entire document body with dramatic visuals
+            // Overwrite the entire document body with dramatic visuals and Tenor embed
             document.body.innerHTML = `
-                <div class="h-screen w-screen flex flex-col items-center justify-center bg-slate-900 text-white p-4 text-center">
-                    <h1 class="text-5xl md:text-7xl font-extrabold mb-4 animate-bounce text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500 tracking-tight drop-shadow-lg">
+                <div class="h-screen w-screen flex flex-col items-center justify-center bg-slate-950 text-white p-4 text-center">
+                    <h1 class="text-5xl md:text-7xl font-black mb-4 animate-bounce text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500 tracking-tight drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]">
                         ABEY SAALE! 😡
                     </h1>
-                    <p class="text-xl md:text-2xl mb-8 text-slate-300 font-medium max-w-2xl">
-                        Over 100% guaranteed returns?! Are you running a Ponzi scheme?!
+                    <p class="text-xl md:text-3xl mb-8 text-amber-400 font-bold max-w-4xl drop-shadow-md px-4 leading-relaxed">
+                        "${roastMessage}"
                     </p>
                     
-                    <div class="relative group mb-10 mt-4 w-full max-w-2xl">
+                    <div class="relative group mb-10 mt-2 w-full max-w-2xl px-4">
                         <!-- Glowing aura behind the GIF -->
-                        <div class="absolute -inset-2 bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl blur-lg opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
+                        <div class="absolute inset-0 bg-gradient-to-r from-red-600 to-orange-600 rounded-3xl blur-xl opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
                         
                         <!-- The Tenor Embed Container -->
-                        <div class="relative bg-black rounded-2xl border-2 border-slate-800 shadow-2xl overflow-hidden p-1 z-10">
+                        <div class="relative bg-black rounded-2xl border border-slate-800 shadow-2xl overflow-hidden p-1 z-10">
                             <div class="tenor-gif-embed" data-postid="15723320" data-share-method="host" data-aspect-ratio="1.77778" data-width="100%"><a href="https://tenor.com/view/abey-saale-gif-15723320">Abey Saale GIF</a>from <a href="https://tenor.com/search/abey+saale-gifs">Abey Saale GIFs</a></div>
                         </div>
                     </div>
 
-                    <button onclick="location.reload()" class="px-8 py-4 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-full font-bold text-lg hover:scale-105 transition-all shadow-xl hover:shadow-red-500/20 text-red-400 z-20">
-                        Take Me Back to Reality 📉
+                    <button onclick="location.reload()" class="px-8 py-4 bg-slate-900 hover:bg-slate-800 border-2 border-red-900 hover:border-red-600 rounded-full font-bold text-lg hover:scale-110 transition-all duration-300 shadow-xl hover:shadow-[0_0_30px_rgba(239,68,68,0.4)] text-red-400 z-20">
+                        Galti Ho Gayi Bhai... Take Me Back 📉
                     </button>
                 </div>
             `;
 
-            // Dynamically load the Tenor embed script so the GIF renders after being injected into the DOM
+            // Dynamically load the Tenor embed script so the GIF renders
             const tenorScript = document.createElement('script');
             tenorScript.type = 'text/javascript';
             tenorScript.async = true;
