@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Compounding Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="text-slate-800 antialiased p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Wealth Growth Calculator</h1>
+            <p class="text-slate-500 mt-2">Model your investment growth, including when you plan to stop contributing and let it ride.</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Inputs Section -->
+            <div class="lg:col-span-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-fit">
+                <h2 class="text-lg font-semibold mb-6 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                    Investment Parameters
+                </h2>
+
+                <div class="space-y-5">
+                    <!-- Initial Investment -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Initial Investment</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <span class="text-slate-400 sm:text-sm">AED</span>
+                            </div>
+                            <input type="number" id="initial" value="10000" class="block w-full pl-12 pr-3 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" oninput="calculate()">
+                        </div>
+                    </div>
+
+                    <!-- Regular Contribution -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Regular Contribution</label>
+                        <div class="flex gap-2">
+                            <div class="relative flex-grow">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-slate-400 sm:text-sm">AED</span>
+                                </div>
+                                <input type="number" id="contribution" value="2000" class="block w-full pl-12 pr-3 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" oninput="calculate()">
+                            </div>
+                            <select id="freq" class="block w-32 pl-3 pr-8 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors bg-white" onchange="calculate()">
+                                <option value="monthly">Monthly</option>
+                                <option value="annual">Annually</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Timeline -->
+                    <div class="grid grid-cols-2 gap-4 pt-2">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Total Years</label>
+                            <input type="number" id="totalYears" value="20" class="block w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" oninput="calculate()">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Stop Investing In</label>
+                            <input type="number" id="stopYears" value="10" class="block w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" oninput="calculate()">
+                            <p class="text-xs text-slate-400 mt-1">Year contributions end</p>
+                        </div>
+                    </div>
+
+                    <!-- Expected Return -->
+                    <div class="pt-2">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Expected Annual Return</label>
+                        <div class="relative">
+                            <input type="number" id="rate" value="7" step="0.1" class="block w-full pl-3 pr-8 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" oninput="calculate()">
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <span class="text-slate-400 sm:text-sm">%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="lg:col-span-8 flex flex-col gap-6">
+                
+                <!-- Summary Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-indigo-600 text-white p-6 rounded-2xl shadow-sm">
+                        <p class="text-indigo-100 text-sm font-medium mb-1">Total Future Value</p>
+                        <h3 class="text-3xl font-bold" id="outTotal">AED 0</h3>
+                    </div>
+                    <div class="bg-white border border-slate-100 p-6 rounded-2xl shadow-sm">
+                        <p class="text-slate-500 text-sm font-medium mb-1">Total Contributions</p>
+                        <h3 class="text-2xl font-bold text-slate-800" id="outPrincipal">AED 0</h3>
+                    </div>
+                    <div class="bg-white border border-slate-100 p-6 rounded-2xl shadow-sm">
+                        <p class="text-slate-500 text-sm font-medium mb-1">Total Returns Earned</p>
+                        <h3 class="text-2xl font-bold text-emerald-600" id="outInterest">AED 0</h3>
+                    </div>
+                </div>
+
+                <!-- Chart -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex-grow">
+                    <h2 class="text-lg font-semibold mb-4 text-slate-800">Growth Trajectory</h2>
+                    <div class="relative h-72 md:h-96 w-full">
+                        <canvas id="growthChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let growthChart = null;
+
+        // Formats numbers with commas (e.g., 1,000,000)
+        const formatCurrency = (num) => {
+            return 'AED ' + num.toLocaleString('en-US', { maximumFractionDigits: 0 });
+        };
+
+        function calculate() {
+            // Get values
+            const initial = parseFloat(document.getElementById('initial').value) || 0;
+            const contribution = parseFloat(document.getElementById('contribution').value) || 0;
+            const freq = document.getElementById('freq').value;
+            const totalYears = parseInt(document.getElementById('totalYears').value) || 0;
+            let stopYears = parseInt(document.getElementById('stopYears').value) || 0;
+            const rate = parseFloat(document.getElementById('rate').value) || 0;
+
+            // Easter egg: Returns > 100%
+            if (rate > 100) {
+                triggerMemeMode();
+                return;
+            }
+
+            // Logic check: Can't stop after total years
+            if (stopYears > totalYears) {
+                stopYears = totalYears;
+                // Don't auto-override the input field while typing to avoid annoyance, 
+                // but use totalYears for math.
+            }
+
+            let currentBalance = initial;
+            let totalContributions = initial;
+            const monthlyRate = rate / 100 / 12;
+
+            const labels = [0];
+            const principalData = [initial];
+            const returnData = [0];
+            const balanceData = [initial];
+
+            for (let year = 1; year <= totalYears; year++) {
+                for (let month = 1; month <= 12; month++) {
+                    
+                    // Apply compound growth for the month
+                    let monthlyReturn = currentBalance * monthlyRate;
+                    currentBalance += monthlyReturn;
+
+                    // Add contributions if we are within the active investing phase
+                    if (year <= stopYears) {
+                        if (freq === 'monthly') {
+                            currentBalance += contribution;
+                            totalContributions += contribution;
+                        } else if (freq === 'annual' && month === 12) {
+                            // Add annual contribution at the end of the year
+                            currentBalance += contribution;
+                            totalContributions += contribution;
+                        }
+                    }
+                }
+                
+                // Store year-end data points for the chart
+                labels.push(year);
+                principalData.push(totalContributions);
+                returnData.push(currentBalance - totalContributions);
+                balanceData.push(currentBalance);
+            }
+
+            // Update UI text
+            document.getElementById('outTotal').innerText = formatCurrency(currentBalance);
+            document.getElementById('outPrincipal').innerText = formatCurrency(totalContributions);
+            document.getElementById('outInterest').innerText = formatCurrency(currentBalance - totalContributions);
+
+            // Update Chart
+            renderChart(labels, principalData, returnData);
+        }
+
+        function renderChart(labels, principalData, returnData) {
+            const ctx = document.getElementById('growthChart').getContext('2d');
+            
+            if (growthChart) {
+                growthChart.destroy();
+            }
+
+            growthChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Total Contributions',
+                            data: principalData,
+                            backgroundColor: '#94a3b8', // slate-400
+                            stacked: true,
+                            borderRadius: { topLeft: 0, topRight: 0, bottomLeft: 4, bottomRight: 4 }
+                        },
+                        {
+                            label: 'Returns Earned',
+                            data: returnData,
+                            backgroundColor: '#10b981', // emerald-500
+                            stacked: true,
+                            borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 0, bottomRight: 0 }
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += 'AED ' + context.parsed.y.toLocaleString('en-US', {maximumFractionDigits: 0});
+                                    }
+                                    return label;
+                                },
+                                footer: function(tooltipItems) {
+                                    let total = 0;
+                                    tooltipItems.forEach(function(tooltipItem) {
+                                        total += tooltipItem.parsed.y;
+                                    });
+                                    return 'Total Balance: AED ' + total.toLocaleString('en-US', {maximumFractionDigits: 0});
+                                }
+                            }
+                        },
+                        legend: {
+                            position: 'bottom',
+                            labels: { usePointStyle: true, padding: 20 }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: true,
+                            title: { display: true, text: 'Years' },
+                            grid: { display: false }
+                        },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    if (value >= 1000000) return (value / 1000000).toFixed(1) + 'M';
+                                    if (value >= 1000) return (value / 1000).toFixed(0) + 'k';
+                                    return value;
+                                }
+                            },
+                            grid: { color: '#f1f5f9' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Run calculation on load
+        window.onload = calculate;
+
+        function triggerMemeMode() {
+            // Clear the body classes to remove padding and light background
+            document.body.className = "bg-slate-900 m-0 p-0 overflow-hidden";
+            
+            // Overwrite the entire document body with dramatic visuals
+            document.body.innerHTML = `
+                <div class="h-screen w-screen flex flex-col items-center justify-center bg-slate-900 text-white p-4 text-center">
+                    <h1 class="text-5xl md:text-7xl font-extrabold mb-4 animate-bounce text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500 tracking-tight drop-shadow-lg">
+                        ABEY SAALE! 😡
+                    </h1>
+                    <p class="text-xl md:text-2xl mb-8 text-slate-300 font-medium max-w-2xl">
+                        Over 100% guaranteed returns?! Are you running a Ponzi scheme?!
+                    </p>
+                    
+                    <div class="relative group mb-10 mt-4 w-full max-w-2xl">
+                        <!-- Glowing aura behind the GIF -->
+                        <div class="absolute -inset-2 bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl blur-lg opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
+                        
+                        <!-- The Tenor Embed Container -->
+                        <div class="relative bg-black rounded-2xl border-2 border-slate-800 shadow-2xl overflow-hidden p-1 z-10">
+                            <div class="tenor-gif-embed" data-postid="15723320" data-share-method="host" data-aspect-ratio="1.77778" data-width="100%"><a href="https://tenor.com/view/abey-saale-gif-15723320">Abey Saale GIF</a>from <a href="https://tenor.com/search/abey+saale-gifs">Abey Saale GIFs</a></div>
+                        </div>
+                    </div>
+
+                    <button onclick="location.reload()" class="px-8 py-4 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-full font-bold text-lg hover:scale-105 transition-all shadow-xl hover:shadow-red-500/20 text-red-400 z-20">
+                        Take Me Back to Reality 📉
+                    </button>
+                </div>
+            `;
+
+            // Dynamically load the Tenor embed script so the GIF renders after being injected into the DOM
+            const tenorScript = document.createElement('script');
+            tenorScript.type = 'text/javascript';
+            tenorScript.async = true;
+            tenorScript.src = 'https://tenor.com/embed.js';
+            document.body.appendChild(tenorScript);
+        }
+    </script>
+</body>
+</html>
