@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,20 +15,15 @@
         
         /* Meme Screen Styling */
         #memeScreen {
-            background: radial-gradient(circle at center, #1a0b12 0%, #000000 100%);
+            background-color: #000000;
             color: white;
         }
-        .glitch-text {
-            text-shadow: 2px 2px #ff0000, -2px -2px #00ff00;
-            animation: glitch 1s infinite alternate;
-        }
-        @keyframes glitch {
-            0% { transform: skewX(2deg); }
-            100% { transform: skewX(-2deg); }
-        }
+
+        /* Serious Mode Indicator */
+        .serious-active { border-color: #3b82f6 !important; box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); }
     </style>
 </head>
-<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+<body class="text-slate-800 antialiased min-h-screen flex flex-col" onclick="closeMenuOnClickOutside(event)">
 
     <!-- Currency Selection Modal -->
     <div id="currencyModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm transition-opacity duration-300">
@@ -56,46 +50,67 @@
         </div>
     </div>
 
-    <!-- Hidden Meme Screen (Preloaded) -->
+    <!-- Hidden Meme Screen -->
     <div id="memeScreen" class="fixed inset-0 z-[100] hidden flex-col items-center justify-center p-4">
-        <h1 class="text-5xl md:text-7xl font-extrabold uppercase glitch-text mb-6 text-center tracking-tighter" id="roastText">
+        <h1 class="text-3xl md:text-5xl font-bold mb-8 text-center tracking-tight leading-tight max-w-4xl" id="roastText">
             ERROR
         </h1>
         
-        <!-- Tenor Embed Preloaded -->
-        <div class="w-full max-w-lg mb-8 rounded-xl overflow-hidden shadow-[0_0_40px_rgba(255,0,0,0.4)]">
+        <div class="w-full max-w-lg mb-8 rounded-xl overflow-hidden shadow-2xl">
             <div class="tenor-gif-embed" data-postid="15723320" data-share-method="host" data-aspect-ratio="1.77778" data-width="100%">
                 <a href="https://tenor.com/view/abey-saale-gif-15723320">Abey Saale GIF</a>
             </div>
             <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
         </div>
         
-        <button onclick="resetCalculator()" class="bg-white text-black px-8 py-4 rounded-full font-bold text-lg hover:scale-105 transition-transform shadow-lg">
+        <button onclick="resetCalculator()" class="bg-white text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-200 transition-colors shadow-lg">
             Galti Ho Gayi (Take me back)
         </button>
     </div>
 
     <!-- Main Content -->
     <div id="mainContent" class="max-w-6xl mx-auto p-4 md:p-8 w-full blur-bg transition-all duration-500">
-        <header class="mb-8 flex justify-between items-end border-b border-slate-200 pb-4">
+        
+        <!-- Header with Hamburger Menu -->
+        <header class="mb-8 flex justify-between items-end border-b border-slate-200 pb-4 relative">
             <div>
-                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Wealth Growth Calculator</h1>
+                <div class="flex items-center gap-3">
+                    <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Wealth Growth Calculator</h1>
+                    <span id="seriousBadge" class="hidden bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded border border-blue-200">SERIOUS MODE</span>
+                </div>
                 <p class="text-slate-500 mt-2">Model your investment growth, including when you plan to stop contributing.</p>
             </div>
-            <div class="hidden sm:block">
-                <select id="mainCurrency" onchange="updateCurrencySymbol()" class="bg-slate-100 border-none rounded-lg px-3 py-1.5 text-sm font-semibold text-slate-700 focus:ring-2 focus:ring-indigo-500">
-                    <option value="AED">AED</option>
-                    <option value="USD">USD</option>
-                    <option value="INR">INR</option>
-                    <option value="EUR">EUR</option>
-                    <option value="GBP">GBP</option>
-                </select>
+            
+            <div class="flex items-center gap-4">
+                <div class="hidden sm:block">
+                    <select id="mainCurrency" onchange="updateCurrencySymbol()" class="bg-slate-100 border-none rounded-lg px-3 py-1.5 text-sm font-semibold text-slate-700 focus:ring-2 focus:ring-indigo-500">
+                        <option value="AED">AED</option>
+                        <option value="USD">USD</option>
+                        <option value="INR">INR</option>
+                        <option value="EUR">EUR</option>
+                        <option value="GBP">GBP</option>
+                    </select>
+                </div>
+                
+                <!-- Hamburger Menu -->
+                <div class="relative menu-container">
+                    <button onclick="toggleMenu(event)" class="p-2 rounded-lg hover:bg-slate-100 text-slate-600 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
+                    
+                    <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-slate-100 z-10 py-1 origin-top-right transition-all">
+                        <button onclick="toggleSeriousMode()" class="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2">
+                            <span id="modeIcon">🤓</span>
+                            <span id="modeText">Enable Serious Mode</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <!-- Inputs Section -->
-            <div class="lg:col-span-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-fit">
+            <div id="inputCard" class="lg:col-span-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-fit transition-all duration-300">
                 <h2 class="text-lg font-semibold mb-6 flex items-center gap-2">
                     <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                     Investment Parameters
@@ -108,7 +123,7 @@
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <span class="text-slate-400 sm:text-sm currency-label">AED</span>
                             </div>
-                            <input type="number" id="initial" placeholder="e.g. 500" class="block w-full pl-12 pr-3 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <input type="number" id="initial" placeholder="e.g. 500" class="block w-full pl-12 pr-3 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
                         </div>
                     </div>
 
@@ -119,9 +134,9 @@
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <span class="text-slate-400 sm:text-sm currency-label">AED</span>
                                 </div>
-                                <input type="number" id="contribution" placeholder="e.g. 1000" class="block w-full pl-12 pr-3 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                <input type="number" id="contribution" placeholder="e.g. 1000" class="block w-full pl-12 pr-3 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
                             </div>
-                            <select id="freq" class="block w-32 pl-3 pr-8 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+                            <select id="freq" class="block w-32 pl-3 pr-8 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white transition-colors">
                                 <option value="monthly">Monthly</option>
                                 <option value="annual">Annually</option>
                             </select>
@@ -131,25 +146,25 @@
                     <div class="grid grid-cols-2 gap-4 pt-2">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Total Years</label>
-                            <input type="number" id="totalYears" placeholder="e.g. 15" class="block w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <input type="number" id="totalYears" placeholder="e.g. 15" class="block w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Stop Investing In</label>
-                            <input type="number" id="stopYears" placeholder="e.g. 10" class="block w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <input type="number" id="stopYears" placeholder="e.g. 10" class="block w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
                         </div>
                     </div>
 
                     <div class="pt-2 pb-4">
                         <label class="block text-sm font-medium text-slate-700 mb-1">Expected Annual Return</label>
                         <div class="relative">
-                            <input type="number" id="rate" placeholder="e.g. 8" step="0.1" class="block w-full pl-3 pr-8 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <input type="number" id="rate" placeholder="e.g. 8" step="0.1" class="block w-full pl-3 pr-8 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
                             <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                                 <span class="text-slate-400 sm:text-sm">%</span>
                             </div>
                         </div>
                     </div>
 
-                    <button onclick="calculate()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 px-4 rounded-xl shadow-md transition-all duration-200 flex justify-center items-center gap-2">
+                    <button onclick="calculate()" id="calcBtn" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 px-4 rounded-xl shadow-md transition-all duration-200 flex justify-center items-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
                         Calculate Growth
                     </button>
@@ -182,9 +197,8 @@
                         <canvas id="growthChart"></canvas>
                     </div>
                     <div id="emptyChartState" class="absolute inset-0 flex flex-col items-center justify-center text-slate-400">
-                        <svg class="w-16 h-16 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
-                        <p>Enter your numbers and click calculate</p>
-                    </div>
+                    <svg class="w-16 h-16 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
+                    <p>Enter your numbers and click calculate</p>
                 </div>
             </div>
         </div>
@@ -193,120 +207,171 @@
     <script>
         let growthChart = null;
         let currentSymbol = 'AED';
+        let isSeriousMode = false;
 
-        // THE ULTIMATE ROAST DICTIONARIES
+        // Preload multiple meme sounds
+        const memeSounds = [
+            new Audio("https://www.myinstants.com/media/sounds/vine-boom.mp3"), // Vine Boom
+            new Audio("https://www.myinstants.com/media/sounds/movie_1.mp3"), // Bruh
+            new Audio("https://www.myinstants.com/media/sounds/sadtrombone.mp3"), // Sad Trombone
+            new Audio("https://www.myinstants.com/media/sounds/emotional-damage-meme.mp3"), // Emotional Damage
+            new Audio("https://www.myinstants.com/media/sounds/windows-xp-error.mp3") // Windows Error
+        ];
+        memeSounds.forEach(audio => { audio.preload = 'auto'; });
+
+        // STANDARD HINGLISH ROASTS
         const roasts = {
-            delusionalReturn: [ // Rate > 20
-                "Bhai kaunsa maal phook ke return expect kar raha hai?",
-                "Paisa double karne ki scheme Laxmi Chit Fund me milti hai, yahan nahi. Anuradha se baat kar!",
-                "Warren Buffett tera chacha lagta hai kya?",
-                "Itna return toh scammer bhi promise nahi karta aaj kal.",
-                "Bhai, thoda reality me aaja. Delulu is not the solulu.",
-                "I want what you're smoking. Must be premium stuff.",
-                "Harshad Mehta lite banne ki koshish chal rahi hai yahan.",
-                "Aap convince ho gaye ya main aur bolun? (Jab We Met)",
-                "Bhaiyya ji, Elon Musk aapko hire karne aa raha hai.",
-                "Ekdum se waqt badal diya, jazbaat badal diye!",
-                "Bro is expecting crypto returns in a mutual fund.",
-                "Ye raaz bhi ussi ke saath chala gaya.",
-                "Isse accha toh casino chala ja bhai.",
-                "May the force be with you... because math definitely isn't.",
-                "Guru ji, aapke charan kahan hain?",
-                "This is not a 'Get Rich Quick' simulator.",
-                "Kya maal lagaya hai bhai? 20% ke upar kaun deta hai?",
-                "To infinity... and beyond! (Buzz Lightyear lag raha hai tu)",
-                "Bhai tu sapne mein calculator chala raha hai kya?",
-                "Ye scheme tere aur mere alawa kisi ko pata nahi chalni chahiye."
+            delusionalReturn: [ 
+                "Bhai itna return kahan mil raha hai mujhe bhi bata.",
+                "20 percent se zyada return? FD mein dal de chup chap.",
+                "Ye thoda zyada nahi ho gaya?",
+                "Sapne dekhna achhi baat hai, par itne bade nahi.",
+                "Calculator kharab kar dega bhai tu.",
+                "Thoda practical soch le mere bhai.",
+                "Zameen pe aaja udna band kar.",
+                "Return hai ya chamatkar?",
+                "Bhai itni umeed mat rakh market se.",
+                "Lagta hai naya naya market mein aaya hai.",
+                "Ek din mein ameer banne ka scheme lag raha hai.",
+                "Itna paisa banega toh log job kyun karenge?",
+                "Bhai ye calculation thoda check kar wapas.",
+                "Reality check chahiye lagta hai tujhe.",
+                "Khayali pulao banana band kar.",
+                "Itna aasan hota toh sab crorepati hote.",
+                "Market tera saga nahi hai bhai.",
+                "Bhai thoda toh sensible number daal.",
+                "Ye return nahi, chhalawa hai.",
+                "Aise returns ke sapne mat dekh."
             ],
-            richFlex: [ // Monthly > 3000
-                "Itna EMI bharta hai ya Ambani ka rishtedar hai?",
-                "Bhai aapka knowledge toh kamaal ka hai!",
-                "Ye flex karne ka tareeka thoda casual hai.",
-                "Show me the money! (Jerry Maguire)",
-                "Itna paisa mahine ka? Income tax wale raaste me hain.",
-                "Bade log, badi baatein.",
-                "Are you Batman? Because this is Bruce Wayne level pocket money.",
-                "Sir, ye scheme gareebon ke liye nahi hai... oh wait.",
-                "Itna toh main saal me nahi kamata bhai.",
-                "Paisa ho toh kya kuch nahi ho sakta.",
-                "Bhaiyya ji smile! Kuber ka khazana mil gaya kya?",
-                "Apna time aayega... lagta hai tera aa gaya.",
-                "Yahan main pighal gaya. So much cash flow!",
-                "Bhai kidney bech di kya EMI bharne ke liye?",
-                "Bro is single-handedly running the economy.",
-                "You are the 1%. Stop using free calculators.",
-                "Mera baap badmash tha, main bhi badmash hu (Rich kid energy).",
-                "Swag se karenge sabka swagat... especially tera bank manager.",
-                "Bhai tu invest kyu kar raha hai? Sidha bank kharid le.",
-                "This guy definitely asks 'Do you know who my father is?'"
+            richFlex: [ 
+                "Mahine ka 3000 se zyada? Bhai karta kya hai tu?",
+                "Itna invest karega toh khayega kya?",
+                "Lagta hai salary achhi khasi aati hai.",
+                "Bhai itna paisa kahan se bacha raha hai?",
+                "Income tax walon ko bataun kya?",
+                "Thoda paisa ghoomne firne mein bhi uda le.",
+                "Sirf invest hi karna hai ya jeena bhi hai?",
+                "Bhai thoda kam kar le, monthly budget bigad jayega.",
+                "Itna aggressive investment? Aaram se kar.",
+                "Lagta hai poori salary idhar hi dalega.",
+                "Bhai itna paisa hai toh mujhe thoda udhar de de.",
+                "Tera CA pakka khush hoga.",
+                "Itna discipline laya kahan se?",
+                "Mahine ka 3000+? Sach bata kiska paisa hai.",
+                "Itna invest kar raha hai, party kab dega?",
+                "Paisa vasool scheme lag rahi hai teri.",
+                "Itna paisa market mein dalne ke liye himmat chahiye.",
+                "Bhai tera bank balance toh solid hoga.",
+                "Kuch zyada hi bachat kar raha hai tu.",
+                "Ek mahine ka kharcha kitna hai tera?"
             ],
-            trustFundKid: [ // Initial > 5000
-                "Baap ka dada ka bhai ka sabka paisa lagayega kya? (Gangs of Wasseypur)",
-                "Ameer baap ki bigdi aulad lagte ho.",
-                "Welcome to the matrix of generational wealth.",
-                "I am gonna make him an offer he can't refuse. (The Godfather)",
-                "Seedha 5000 se upar? Flex mat kar bhai.",
-                "Bhai itna paisa aaya kahan se? Scam 1992 chal raha hai?",
-                "Tera baap Mukesh Ambani hai kya?",
-                "Khandani raees lagte ho.",
-                "You must be the guy funding Tony Stark.",
-                "Bro dropped a down payment just to test the calculator.",
-                "Please adopt me.",
-                "Paisa bolta hai, aur tera toh chilla raha hai.",
-                "Lagta hai aaj hi lottery jeeti hai bhai ne.",
-                "Chillar samajh rakha hai kya isko?",
-                "Isne definitely shadi mein note udaye honge.",
-                "Bhai tu shark tank mein ja, yahan kya kar raha hai?",
-                "Aur batao, South Delhi/Bandra se ho kya?",
-                "Itna paisa leke kidhar jaoge babu bhaiya?",
-                "Bro's initial deposit is my life savings.",
-                "Tax bhara hai ispe?"
+            trustFundKid: [ 
+                "Shuruwaat mein hi 5000 se zyada? Ameer lag raha hai.",
+                "Bhai itna lump sum kahan se laaya?",
+                "Pehli baar mein itna bada risk?",
+                "Lagta hai saving achhi karke rakhi thi.",
+                "Itna paisa ek saath mat daal bhai.",
+                "Shuruaat toh badi dhasu kar raha hai.",
+                "Itna amount dekh ke calculator bhi dar gaya.",
+                "Tera portfolio toh start se hi bhaari hoga.",
+                "Bhai ekdum se itna paisa mat laga.",
+                "Itna initial amount? Tera background strong hai.",
+                "Paisa hi paisa hoga wali feeling aa rahi hai kya?",
+                "Bhai seedha deep end mein kood raha hai.",
+                "Itna bada start? Market ko hila dega kya.",
+                "Initial hi itna hai toh aage kya karega.",
+                "Ameer admi ke shauk lag rahe hain.",
+                "Bhai thoda sambhal ke khel.",
+                "Itna paisa laga raha hai, soch samajh ke karna.",
+                "Tera fund manager pakka party kar raha hoga.",
+                "Bhai itna paisa pocket money se toh nahi aata.",
+                "Shuru hote hi khatam mat kar dena."
             ],
-            immortal: [ // Years > 20
-                "Bhai amar banke aaya hai kya dharti pe?",
-                "Itne saal baad tera pota aake withdraw karega kya?",
-                "Zindagi na milegi dobara... par tujhe lagta hai tu 200 saal jiyega.",
-                "Picture abhi baaki hai mere dost! Par tu nahi bachega.",
-                "I will be back. (Terminator) - but you won't be alive!",
-                "Kya kijiyega itni dhan rashi ka itne saal baad?",
-                "Maut ko chhu ke tak se wapas aane ka plan hai?",
-                "Bro is planning for his next reincarnation.",
-                "Vampire hai kya tu? Kitne saal jiyega?",
-                "Tum toh bade heavy driver nikle. Lamba khelenge.",
-                "Ye mutual fund nahi, time capsule hai.",
-                "Dinosaur ke zamane se invest kar raha hai kya?",
-                "Bhai earth bachegi tab na paisa nikalega.",
-                "Elixir of life peeke aaya hai ye aadmi.",
-                "Ashwatthama is that you?",
-                "Tera portfolio tere par-poton ko milega.",
-                "Bro thinks he's in a sci-fi movie.",
-                "20 saal baad toh alien currency chalegi bhai.",
-                "Patience level: Monk on Himalayas.",
-                "Bhai tu investment kar raha hai ya pyramid bana raha hai?"
+            immortal: [ 
+                "20 saal se zyada? Bhai kitna lamba khelega?",
+                "Tab tak toh duniya kahan ki kahan pahunch jayegi.",
+                "Itna patience laya kahan se bhai tu?",
+                "Budhape tak invest hi karta rahega kya?",
+                "Paisa enjoy kab karega phir?",
+                "20 saal mein toh generation change ho jati hai.",
+                "Bhai kuch zyada hi long term soch raha hai.",
+                "Itna lamba plan toh sarkar bhi nahi banati.",
+                "Tera paisa tere pote potiyan khayenge kya?",
+                "Bhai zindagi choti hai, thoda jaldi returns enjoy kar.",
+                "20 saal ka wait? Sanyasi ban gaya kya.",
+                "Itne saal baad paiso ki value kam ho jayegi bhai.",
+                "Tab tak market rahega ya nahi kisko pata.",
+                "Bhai itna aage ki mat soch abhi se.",
+                "Itna lamba horizon? Tera vision alag level pe hai.",
+                "Tera patience toh test ho jayega poora.",
+                "Bhai retire hone ke baad paise ka kya karega.",
+                "20 saal baad toh alien aa jayenge Earth pe.",
+                "Itne time mein toh duniya palat jati hai.",
+                "Bhai thoda short term goal bhi rakh le."
             ],
-            timeTraveler: [ // Stop Years > Total Years
-                "Aap chronology samajhiye!",
-                "Jalwa hai hamara! Time ke aage nikal gaye hum.",
-                "Christopher Nolan aapki location dhoond raha hai.",
-                "Tenet ki script yahi likh raha tha kya?",
-                "Kaun hain ye log? Kahan se aate hain ye? (Jolly LLB)",
-                "Error 404: Common sense not found.",
-                "Kuch bhi! Kuch bhi?! (Arnab noise)",
-                "Marty McFly, is that you? (Back to the Future)",
-                "Dimaag bech ke kha gaye kya?",
-                "Yeh toh out of syllabus aa gaya.",
-                "Bhai math ki book phad ke phek di tune.",
-                "Time machine rent pe li hai kya?",
-                "Doctor Strange idhar aana zara.",
-                "Bro is defying the laws of physics.",
-                "Stop years CANNOT be more than total years. Padhna nahi aata?",
-                "Beta tumse na ho payega. (Gangs of Wasseypur)",
-                "Ye kaunsa nasha karke logic laga raha hai?",
-                "Aise calculator chalaoge toh economy dub jayegi.",
-                "Einstein ro raha hoga ye dekh ke.",
-                "Interstellar ka music background mein bajna chahiye."
+            timeTraveler: [ 
+                "Total saal se zyada time tak kaise invest karega bhai?",
+                "Bhai logic kahan chhod ke aaya hai?",
+                "Ye math kis school mein padha tha tune?",
+                "Bhai thoda dimaag laga le form bharne se pehle.",
+                "Time travel karke wapas jayega kya invest karne?",
+                "Ye calculation kisi ko mat dikhana.",
+                "Bhai dono saal wapas check kar ek baar.",
+                "Stop years total se zyada kaise ho sakte hain?",
+                "Bhai ye basic error mat kar yahan.",
+                "Tera calculator ulta chal raha hai lagta hai.",
+                "Aise karega toh market kya pura system crash hoga.",
+                "Bhai tu numbers ke saath khelna band kar.",
+                "Ye kya gajab logic lagaya hai tune?",
+                "Dono field dhyaan se padh ke bhar bhai.",
+                "Maths ke teacher ro rahe honge tere.",
+                "Ye input dekh ke system hang ho jayega.",
+                "Bhai common sense use kar thoda.",
+                "Total period se aage kaise stop karega?",
+                "Bhai tu kya space-time bend kar raha hai?",
+                "Ye mistake toh bacha bhi na kare."
             ]
         };
+
+        // UI Interactions
+        function toggleMenu(e) {
+            e.stopPropagation();
+            document.getElementById('dropdownMenu').classList.toggle('hidden');
+        }
+
+        function closeMenuOnClickOutside(e) {
+            if (!e.target.closest('.menu-container')) {
+                document.getElementById('dropdownMenu').classList.add('hidden');
+            }
+        }
+
+        function toggleSeriousMode() {
+            isSeriousMode = !isSeriousMode;
+            const textEl = document.getElementById('modeText');
+            const iconEl = document.getElementById('modeIcon');
+            const badge = document.getElementById('seriousBadge');
+            const calcBtn = document.getElementById('calcBtn');
+            const inputCard = document.getElementById('inputCard');
+
+            if (isSeriousMode) {
+                textEl.innerText = "Disable Serious Mode";
+                iconEl.innerText = "🤡";
+                badge.classList.remove('hidden');
+                inputCard.classList.add('serious-active');
+                calcBtn.classList.replace('bg-slate-900', 'bg-blue-600');
+                calcBtn.classList.replace('hover:bg-slate-800', 'hover:bg-blue-700');
+            } else {
+                textEl.innerText = "Enable Serious Mode";
+                iconEl.innerText = "🤓";
+                badge.classList.add('hidden');
+                inputCard.classList.remove('serious-active');
+                calcBtn.classList.replace('bg-blue-600', 'bg-slate-900');
+                calcBtn.classList.replace('hover:bg-blue-700', 'hover:bg-slate-800');
+            }
+            
+            document.getElementById('dropdownMenu').classList.add('hidden');
+            calculate(); // Re-run math without constraints if numbers are already entered
+        }
 
         function getRandomRoast(category) {
             const arr = roasts[category];
@@ -314,6 +379,11 @@
         }
 
         function triggerMeme(roastText) {
+            // Play Random Meme Sound
+            const audio = memeSounds[Math.floor(Math.random() * memeSounds.length)];
+            audio.currentTime = 0;
+            audio.play().catch(e => console.log("Audio play prevented by browser policy", e));
+
             document.getElementById('mainContent').classList.add('hidden');
             document.getElementById('roastText').innerText = roastText;
             document.getElementById('memeScreen').classList.remove('hidden');
@@ -321,4 +391,196 @@
         }
 
         function resetCalculator() {
-            document.getElementById('memeScreen').c
+            document.getElementById('memeScreen').classList.add('hidden');
+            document.getElementById('memeScreen').classList.remove('flex');
+            document.getElementById('mainContent').classList.remove('hidden');
+            document.getElementById('initial').value = '';
+            document.getElementById('contribution').value = '';
+            document.getElementById('totalYears').value = '';
+            document.getElementById('stopYears').value = '';
+            document.getElementById('rate').value = '';
+        }
+
+        function startApp() {
+            const selected = document.getElementById('initialCurrency').value;
+            document.getElementById('mainCurrency').value = selected;
+            updateCurrencySymbol();
+            
+            document.getElementById('currencyModal').classList.add('opacity-0');
+            setTimeout(() => {
+                document.getElementById('currencyModal').classList.add('hidden');
+                document.getElementById('mainContent').classList.remove('blur-bg');
+            }, 300);
+        }
+
+        function updateCurrencySymbol() {
+            currentSymbol = document.getElementById('mainCurrency').value;
+            document.querySelectorAll('.currency-label, .currency-symbol').forEach(el => {
+                el.innerText = currentSymbol;
+            });
+            if (growthChart) calculate();
+        }
+
+        const formatCurrency = (num) => {
+            return num.toLocaleString('en-US', { maximumFractionDigits: 0 });
+        };
+
+        function calculate() {
+            document.getElementById('errorMsg').classList.add('hidden');
+
+            const initialRaw = document.getElementById('initial').value;
+            const contribRaw = document.getElementById('contribution').value;
+            const totalYearsRaw = document.getElementById('totalYears').value;
+            const stopYearsRaw = document.getElementById('stopYears').value;
+            const rateRaw = document.getElementById('rate').value;
+
+            if (!initialRaw || !contribRaw || !totalYearsRaw || !rateRaw) {
+                // Only show error if they actively hit calculate without data
+                if (event && event.type === 'click') {
+                    document.getElementById('errorMsg').classList.remove('hidden');
+                }
+                return;
+            }
+
+            const initial = parseFloat(initialRaw);
+            const contribution = parseFloat(contribRaw);
+            const totalYears = parseInt(totalYearsRaw);
+            const rate = parseFloat(rateRaw);
+            const freq = document.getElementById('freq').value;
+            let stopYears = stopYearsRaw ? parseInt(stopYearsRaw) : totalYears;
+
+            // Trigger Logic - Bypassed if Serious Mode is ON
+            if (!isSeriousMode) {
+                if (stopYears > totalYears) {
+                    triggerMeme(getRandomRoast('timeTraveler'));
+                    return;
+                }
+                if (rate > 20) {
+                    triggerMeme(getRandomRoast('delusionalReturn'));
+                    return;
+                }
+                if (contribution > 3000) {
+                    triggerMeme(getRandomRoast('richFlex'));
+                    return;
+                }
+                if (initial > 5000) {
+                    triggerMeme(getRandomRoast('trustFundKid'));
+                    return;
+                }
+                if (totalYears > 20) {
+                    triggerMeme(getRandomRoast('immortal'));
+                    return;
+                }
+            }
+
+            document.getElementById('emptyChartState').style.display = 'none';
+            document.getElementById('chartContainer').classList.remove('opacity-0');
+
+            let currentBalance = initial;
+            let totalContributions = initial;
+            const monthlyRate = rate / 100 / 12;
+
+            const labels = [0];
+            const principalData = [initial];
+            const returnData = [0];
+
+            for (let year = 1; year <= totalYears; year++) {
+                for (let month = 1; month <= 12; month++) {
+                    let monthlyReturn = currentBalance * monthlyRate;
+                    currentBalance += monthlyReturn;
+
+                    if (year <= stopYears) {
+                        if (freq === 'monthly') {
+                            currentBalance += contribution;
+                            totalContributions += contribution;
+                        } else if (freq === 'annual' && month === 12) {
+                            currentBalance += contribution;
+                            totalContributions += contribution;
+                        }
+                    }
+                }
+                labels.push(year);
+                principalData.push(totalContributions);
+                returnData.push(currentBalance - totalContributions);
+            }
+
+            document.getElementById('outTotal').innerHTML = `<span class="text-indigo-200 text-lg mr-1">${currentSymbol}</span>${formatCurrency(currentBalance)}`;
+            document.getElementById('outPrincipal').innerHTML = `<span class="text-slate-400 text-sm mr-1">${currentSymbol}</span>${formatCurrency(totalContributions)}`;
+            document.getElementById('outInterest').innerHTML = `<span class="text-emerald-400 text-sm mr-1">${currentSymbol}</span>${formatCurrency(currentBalance - totalContributions)}`;
+
+            renderChart(labels, principalData, returnData);
+        }
+
+        function renderChart(labels, principalData, returnData) {
+            const ctx = document.getElementById('growthChart').getContext('2d');
+            
+            if (growthChart) growthChart.destroy();
+
+            growthChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Contributions',
+                            data: principalData,
+                            backgroundColor: '#94a3b8', 
+                            stacked: true,
+                            borderRadius: { topLeft: 0, topRight: 0, bottomLeft: 4, bottomRight: 4 }
+                        },
+                        {
+                            label: 'Returns',
+                            data: returnData,
+                            backgroundColor: '#10b981',
+                            stacked: true,
+                            borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 0, bottomRight: 0 }
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) label += ': ';
+                                    if (context.parsed.y !== null) {
+                                        label += currentSymbol + ' ' + context.parsed.y.toLocaleString('en-US', {maximumFractionDigits: 0});
+                                    }
+                                    return label;
+                                },
+                                footer: function(tooltipItems) {
+                                    let total = 0;
+                                    tooltipItems.forEach(function(tooltipItem) {
+                                        total += tooltipItem.parsed.y;
+                                    });
+                                    return 'Total: ' + currentSymbol + ' ' + total.toLocaleString('en-US', {maximumFractionDigits: 0});
+                                }
+                            }
+                        },
+                        legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } }
+                    },
+                    scales: {
+                        x: { stacked: true, title: { display: true, text: 'Years' }, grid: { display: false } },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    if (value >= 1000000) return (value / 1000000).toFixed(1) + 'M';
+                                    if (value >= 1000) return (value / 1000).toFixed(0) + 'k';
+                                    return value;
+                                }
+                            },
+                            grid: { color: '#f1f5f9', drawBorder: false }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
